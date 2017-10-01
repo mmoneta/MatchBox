@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+#field {
+    position: absolute;
+}
+
+#content {
+    position: absolute;
+    right: 2vw;
+    text-align: center;
+}
+
+.headers {
+    color: white;
+}
+
+.colors {
+    display: block;
+    margin: 0 auto;
+    min-width: 50px; 
+    min-height: 50px; 
+    max-height: 50px;
+    max-width: 50px;
+}
