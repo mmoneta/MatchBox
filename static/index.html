@@ -1,188 +1,188 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>MatchBox</title>
     <meta charset="utf-8" />
     <meta name="author" content="Mateusz Moneta" />
     <script src="libs/three.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script>
-        window.addEventListener("load", function() {
-			var currentMesh = "";
-            var scene = new THREE.Scene();
-            var camera = new THREE.PerspectiveCamera(
-                45,                                    // angle of view of the camera (FOV - field of view)
-                screen.width / screen.height,          // view proportions
-                0.1,             				       // min rendered distance
-                10000            				       // max rendered distance
-            );
-            var renderer = new THREE.WebGLRenderer();
-            renderer.setClearColor(0x000000);          // background color - prefix 0x
-            var width = window.innerWidth;
-            var height = window.innerHeight;
-            renderer.setSize(width, height);           // determining the size of the rendered window in px
-            document.getElementById("field").appendChild(renderer.domElement);  // adding a renderer to a div
+      window.addEventListener("load", function() {
+        var currentMesh = "";
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(
+          45,                             // angle of view of the camera (FOV - field of view)
+          screen.width / screen.height,   // view proportions
+          0.1,                            // min rendered distance
+          10000                           // max rendered distance
+        );
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000);          // background color - prefix 0x
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        renderer.setSize(width, height);           // determining the size of the rendered window in px
+        document.getElementById("field").appendChild(renderer.domElement);  // adding a renderer to a div
 
-            // Material composed of several others
-            var materials = [];
-            materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/A.jpg') }));
-            materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/A.jpg') }));
-            materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/C.jpg') }));
-            materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/C.jpg') }));
-            materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/B.jpg') }));
-            materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/B.jpg') }));
-            var faceMaterial = new THREE.MeshFaceMaterial(materials);
-            var boxGeometry = new THREE.BoxGeometry(100, 25, 50);
+        // Material composed of several others
+        var materials = [];
+        materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/A.jpg') }));
+        materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/A.jpg') }));
+        materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/C.jpg') }));
+        materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/C.jpg') }));
+        materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/B.jpg') }));
+        materials.push(new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: THREE.ImageUtils.loadTexture('mats/B.jpg') }));
+        var faceMaterial = new THREE.MeshFaceMaterial(materials);
+        var boxGeometry = new THREE.BoxGeometry(100, 25, 50);
 
-            // Parameters
-            var sets = {
-                x: 100,
-                y: 25,
-                z: 50
-            }
-            var looking = 30;
-            var degree = 90;
-            for (var i = -1; i < 2; i++) {
-                for (var j = -1; j < 2; j++) {
-                    var mesh = new THREE.Mesh(boxGeometry, faceMaterial);
-                    mesh.position.set(i * sets.x, 0, j * sets.z);
-                    scene.add(mesh);
-                }
-            }
+        // Parameters
+        var sets = {
+          x: 100,
+          y: 25,
+          z: 50
+        }
+        var looking = 30;
+        var degree = 90;
+        for (var i = -1; i < 2; i++) {
+          for (var j = -1; j < 2; j++) {
+            var mesh = new THREE.Mesh(boxGeometry, faceMaterial);
+            mesh.position.set(i * sets.x, 0, j * sets.z);
+            scene.add(mesh);
+          }
+        }
 
-            // Raycasting
-            document.addEventListener("mousedown", onMouseDown, false);
-            var raycaster = new THREE.Raycaster();      // object simulating "throwing" rays
-            var mouseVector = new THREE.Vector2()       // the vector (x, y) will be used to determine the position of the mouse on the screen
-            function onMouseDown(event) {
-                // the mouse position is converted to a value of 0-1, required by raycaster
-                mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
-                mouseVector.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                // looking for common "radius" and 3D objects 
-                raycaster.setFromCamera(mouseVector, camera);
-                // intersects - array of objects that "gets" our "radius" sent from the camera
-                var intersects = raycaster.intersectObjects(scene.children);
-                // if the length of the array > 0 means that we hit the 3D object, that is, we clicked on it
-                if (intersects.length > 0) {
-                   currentMesh = intersects[0].object;
-                }
-            }
+        // Raycasting
+        document.addEventListener("mousedown", onMouseDown, false);
+        var raycaster = new THREE.Raycaster();      // object simulating "throwing" rays
+        var mouseVector = new THREE.Vector2()       // the vector (x, y) will be used to determine the position of the mouse on the screen
+        function onMouseDown(event) {
+          // the mouse position is converted to a value of 0-1, required by raycaster
+          mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
+          mouseVector.y = -(event.clientY / window.innerHeight) * 2 + 1;
+          // looking for common "radius" and 3D objects 
+          raycaster.setFromCamera(mouseVector, camera);
+          // intersects - array of objects that "gets" our "radius" sent from the camera
+          var intersects = raycaster.intersectObjects(scene.children);
+          // if the length of the array > 0 means that we hit the 3D object, that is, we clicked on it
+          if (intersects.length > 0) {
+             currentMesh = intersects[0].object;
+          }
+        }
 
-            // Distance between two objects
-            function distance(id, x, y, z) {
-                var impossible = false;
-                for (var i = 0; i < scene.children.length; i++) {
-                    var v2 = scene.children[i];
-                    var dx = x - v2.position.x;
-                    var dy = y - v2.position.y;
-                    var dz = z - v2.position.z;
-                    if (id != v2.id && Math.sqrt(dx * dx + dy * dy + dz * dz) <= 0)
-                        impossible = true;
-                }
-                return impossible;
-            }
+        // Distance between two objects
+        function distance(id, x, y, z) {
+          var impossible = false;
+          for (var i = 0; i < scene.children.length; i++) {
+            var v2 = scene.children[i];
+            var dx = x - v2.position.x;
+            var dy = y - v2.position.y;
+            var dz = z - v2.position.z;
+            if (id != v2.id && Math.sqrt(dx * dx + dy * dy + dz * dz) <= 0)
+              impossible = true;
+          }
+          return impossible;
+        }
 
-            document.addEventListener("keydown", function(event) {
-                var keyCode = event.which; 
-                switch (keyCode) {
-					// Camera position
-                    case 38:
-                        looking += 0.1;
-                        camera.position.z = Math.cos(looking) * 500;
-                        camera.position.y = Math.sin(looking) * 500;
-                        camera.lookAt(point);
-                        break;
-                    case 40:
-                        looking -= 0.1;
-                        camera.position.z = Math.cos(looking) * 500;
-                        camera.position.y = Math.sin(looking) * 500;
-                        camera.lookAt(point);
-                        break;
-                    case 37:
-                        degree += 0.1;
-                        camera.position.x = Math.cos(degree) * 300;
-                        camera.position.z = Math.sin(degree) * 300;
-                        camera.lookAt(point);
-                        break;
-                    case 39:
-                        degree -= 0.1;
-                        camera.position.x = Math.cos(degree) * 300;
-                        camera.position.z = Math.sin(degree) * 300;
-                        camera.lookAt(point);
-                        break;
-					// Positioning elements
-                    case 65:
-                        if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y, currentMesh.position.z - sets.z) == false)
-                            currentMesh.position.z -= sets.z;
-                        break;
-                    case 68:
-                        if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y, currentMesh.position.z + sets.z) == false)
-                            currentMesh.position.z += sets.z;
-                        break;
-                    case 83:
-                        if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y - sets.y, currentMesh.position.z) == false)
-                            currentMesh.position.y -= sets.y;
-                        break;
-                    case 87:
-                        if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y + sets.y, currentMesh.position.z) == false)
-                            currentMesh.position.y += sets.y;
-                        break;
-                    case 88:
-                        if (distance(currentMesh.id, currentMesh.position.x + sets.x, currentMesh.position.y, currentMesh.position.z) == false)
-                            currentMesh.position.x += sets.x;
-                        break;
-                    case 90:
-                        if (distance(currentMesh.id, currentMesh.position.x + sets.x, currentMesh.position.y, currentMesh.position.z) == false)
-                            currentMesh.position.x -= sets.x;
-                        break;
-                }
-            })
-
-            // Default camera position
-            camera.position.x = Math.cos(degree) * 300;
-            camera.position.y = 300;
-            camera.position.z = Math.sin(degree) * 300;
-			var point = new THREE.Vector3();
-			camera.lookAt(point);		// pointing the camera to the point (0,0,0) in space
-
-            // Animation
-            function animateScene() {
-                requestAnimationFrame(animateScene);    // continuous rendering / viewing of the scene view of our camera
-                renderer.render(scene, camera);
-            }
-            animateScene();
-			
-			Array.from(document.getElementsByClassName("colors")).forEach(function(element) {
-				element.addEventListener('click', change);
-			});
-            function change() {
-                var color = this.style.backgroundColor;
-                if (color == "black") {
-                    fontColor = "rgb(255, 255, 255)";
-                    renderer.setClearColor(0x000000);
-					background = 0x000000;
-                } 
-				else {
-                    fontColor = "rgb(0, 0, 0)";
-					renderer.setClearColor(0xffffff);
-					background = 0xffffff;
-                }
-                document.body.style.backgroundColor = background;
-				Array.from(document.getElementsByClassName("headers")).forEach(function(element) {
-					element.style.color = fontColor;
-				});
-            }
+        document.addEventListener("keydown", function(event) {
+          var keyCode = event.which; 
+          switch (keyCode) {
+            // Camera position
+            case 38:
+              looking += 0.1;
+              camera.position.z = Math.cos(looking) * 500;
+              camera.position.y = Math.sin(looking) * 500;
+              camera.lookAt(point);
+              break;
+            case 40:
+              looking -= 0.1;
+              camera.position.z = Math.cos(looking) * 500;
+              camera.position.y = Math.sin(looking) * 500;
+              camera.lookAt(point);
+              break;
+            case 37:
+              degree += 0.1;
+              camera.position.x = Math.cos(degree) * 300;
+              camera.position.z = Math.sin(degree) * 300;
+              camera.lookAt(point);
+              break;
+            case 39:
+              degree -= 0.1;
+              camera.position.x = Math.cos(degree) * 300;
+              camera.position.z = Math.sin(degree) * 300;
+              camera.lookAt(point);
+              break;
+            // Positioning elements
+            case 65:
+              if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y, currentMesh.position.z - sets.z) == false)
+                currentMesh.position.z -= sets.z;
+              break;
+            case 68:
+              if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y, currentMesh.position.z + sets.z) == false)
+                currentMesh.position.z += sets.z;
+              break;
+            case 83:
+              if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y - sets.y, currentMesh.position.z) == false)
+                currentMesh.position.y -= sets.y;
+              break;
+            case 87:
+              if (distance(currentMesh.id, currentMesh.position.x, currentMesh.position.y + sets.y, currentMesh.position.z) == false)
+                currentMesh.position.y += sets.y;
+              break;
+            case 88:
+              if (distance(currentMesh.id, currentMesh.position.x + sets.x, currentMesh.position.y, currentMesh.position.z) == false)
+                currentMesh.position.x += sets.x;
+              break;
+            case 90:
+              if (distance(currentMesh.id, currentMesh.position.x + sets.x, currentMesh.position.y, currentMesh.position.z) == false)
+                currentMesh.position.x -= sets.x;
+              break;
+          }
         })
+
+        // Default camera position
+        camera.position.x = Math.cos(degree) * 300;
+        camera.position.y = 300;
+        camera.position.z = Math.sin(degree) * 300;
+        var point = new THREE.Vector3();
+        camera.lookAt(point);    // pointing the camera to the point (0,0,0) in space
+
+        // Animation
+        function animateScene() {
+          requestAnimationFrame(animateScene);    // continuous rendering / viewing of the scene view of our camera
+          renderer.render(scene, camera);
+        }
+        animateScene();
+        
+        Array.from(document.getElementsByClassName("colors")).forEach(function(element) {
+          element.addEventListener('click', change);
+        });
+        function change() {
+          var color = this.style.backgroundColor;
+          if (color == "black") {
+            fontColor = "rgb(255, 255, 255)";
+            renderer.setClearColor(0x000000);
+            background = 0x000000;
+          } 
+          else {
+            fontColor = "rgb(0, 0, 0)";
+            renderer.setClearColor(0xffffff);
+            background = 0xffffff;
+          }
+          document.body.style.backgroundColor = background;
+          Array.from(document.getElementsByClassName("headers")).forEach(function(element) {
+            element.style.color = fontColor;
+          });
+        }
+      })
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="field"></div>
     <div id="content">
-        <!-- Background color -->
-        <h4 class="headers">COLOR</h4>
-        <div id="firstColor" class="colors" style="background-color: black; border: 1px solid white;"></div>
-        <br />
-        <div id="secondColor" class="colors" style="background-color: white; border: 1px solid black;"></div>
+      <!-- Background color -->
+      <h4 class="headers">COLOR</h4>
+      <div id="firstColor" class="colors" style="background-color: black; border: 1px solid white;"></div>
+      <br />
+      <div id="secondColor" class="colors" style="background-color: white; border: 1px solid black;"></div>
     </div>
-</body>
+  </body>
 </html>
